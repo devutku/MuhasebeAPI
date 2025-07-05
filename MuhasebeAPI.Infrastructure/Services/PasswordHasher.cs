@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using MuhasebeAPI.Application.Interfaces;
+﻿using MuhasebeAPI.Application.Interfaces;
 
 namespace MuhasebeAPI.Infrastructure.Services
 {

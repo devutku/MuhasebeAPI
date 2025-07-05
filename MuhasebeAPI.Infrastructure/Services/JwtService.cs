@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using MuhasebeAPI.Application.Interfaces;
 using MuhasebeAPI.Domain.Entities;
 using MuhasebeAPI.Domain.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 namespace MuhasebeAPI.Infrastructure.Services
 {
     public class JwtService : IJwtService
