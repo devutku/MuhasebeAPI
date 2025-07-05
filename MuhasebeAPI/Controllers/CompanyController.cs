@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using MuhasebeAPI.Application.DTOs;
 using MuhasebeAPI.Application.Interfaces;
 using System.Security.Claims;
+using MediatR;
+using MuhasebeAPI.Application.Commands.CompanyCommands;
+using MuhasebeAPI.Application.Queries.CompanyQueries;
+using MuhasebeAPI.Extensions;
 
 namespace MuhasebeAPI.API.Controllers
 {
@@ -10,24 +14,26 @@ namespace MuhasebeAPI.API.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly ICompanyService _companyService;
+        private readonly IMediator _mediator;
 
-        public CompanyController(ICompanyService companyService)
+        public CompanyController(IMediator mediator)
         {
-            _companyService = companyService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var companies = await _companyService.GetAllCompaniesAsync();
+            var query = new GetAllCompaniesQuery();
+            var companies = await _mediator.Send(query);
             return Ok(companies);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var company = await _companyService.GetCompanyByIdAsync(id);
+            var command = new GetCompanyByIdCommand { Id = id };
+            var company = await _mediator.Send(command);
             if (company == null)
                 return NotFound();
 
@@ -35,62 +41,72 @@ namespace MuhasebeAPI.API.Controllers
         }
 
         [HttpGet("owner/{ownerId}")]
-        public async Task<IActionResult> GetByOwnerId(int ownerId)
+        public async Task<IActionResult> GetByOwnerId(Guid ownerId)
         {
-            var companies = await _companyService.GetCompaniesByOwnerIdAsync(ownerId);
+            var command = new GetCompaniesByOwnerCommand { OwnerId = ownerId };
+            var companies = await _mediator.Send(command);
             return Ok(companies);
         }
+
         [Authorize]
         [HttpPost("create")]
-        public async Task<IActionResult> CreateCompany([FromForm] CompanyRegisterDto dto)
+        public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyCommand command)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("UserId claim not found.");
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            var company = await _companyService.CreateCompanyAsync(dto, userId);
-
-            return Ok(new
+            try
             {
-                company.Id,
-                company.Name,
-                company.TaxNumber,
-                Accounts = company.Accounts.Select(a => new
+                command.OwnerId = User.GetUserId();
+                var company = await _mediator.Send(command);
+
+                return Ok(new
                 {
-                    a.Id,
-                    a.Name,
-                    a.Type,
-                    a.CompanyId
-                })
-            });
+                    company.Id,
+                    company.Name,
+                    company.TaxNumber,
+                    Accounts = company.Accounts.Select(a => new
+                    {
+                        a.Id,
+                        a.Name,
+                        a.Type,
+                        a.CompanyId
+                    })
+                });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCompany(int id, CompanyRegisterDto dto)
+        public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] UpdateCompanyCommand command)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("UserId claim not found.");
+            try
+            {
+                Guid userId = User.GetUserId();
 
-            int userId = int.Parse(userIdClaim.Value);
+                var getCompanyCommand = new GetCompanyByIdCommand { Id = id };
+                var company = await _mediator.Send(getCompanyCommand);
+                if (company == null)
+                    return NotFound();
 
-            var company = await _companyService.GetCompanyByIdAsync(id);
-            if (company == null)
-                return NotFound();
+                if (company.OwnerId != userId)
+                    return Forbid("You are not authorized to update this company.");
 
-            if (company.OwnerId != userId)
-                return Forbid("You are not authorized to update this company.");
-
-            var updatedCompany = await _companyService.UpdateCompanyAsync(id, dto);
-            return Ok(updatedCompany);
+                command.Id = id;
+                var updatedCompany = await _mediator.Send(command);
+                return Ok(updatedCompany);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            bool deleted = await _companyService.DeleteCompanyAsync(id);
+            var command = new DeleteCompanyCommand { Id = id };
+            bool deleted = await _mediator.Send(command);
             if (!deleted)
                 return NotFound();
 

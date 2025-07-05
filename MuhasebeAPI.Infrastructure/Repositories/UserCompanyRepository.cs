@@ -5,31 +5,17 @@ using MuhasebeAPI.Infrastructure.Persistence;
 
 namespace MuhasebeAPI.Infrastructure.Repositories
 {
-    public class UserCompanyRepository : IUserCompanyRepository
+    public class UserCompanyRepository : BaseRepository<UserCompany>, IUserCompanyRepository
     {
-        private readonly AppDbContext _context;
-
-        public UserCompanyRepository(AppDbContext context)
+        public UserCompanyRepository(AppDbContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task AddAsync(UserCompany userCompany)
+        public async Task<IEnumerable<UserCompany>> GetByUserIdAsync(Guid userId)
         {
-            await _context.UserCompanies.AddAsync(userCompany);
-        }
-
-        public async Task<IEnumerable<UserCompany>> GetByUserIdAsync(int userId)
-        {
-            return await _context.UserCompanies
-                .Where(uc => uc.UserId == userId)
+            return await _dbSet
+                .Where(uc => uc.UserId == userId && !uc.IsDeleted)
                 .ToListAsync();
         }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
     }
-
 }

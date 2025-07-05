@@ -1,12 +1,10 @@
 ﻿namespace MuhasebeAPI.Domain.Entities
 {
-    public class Company
+    public class Company : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string? TaxNumber { get; set; }
-        public int OwnerId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public Guid OwnerId { get; set; }
 
         public User Owner { get; set; } = null!;
         public ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();

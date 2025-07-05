@@ -2,15 +2,9 @@
 
 namespace MuhasebeAPI.Domain.Interfaces
 {
-    public interface IInvoiceRepository
+    public interface IInvoiceRepository : IBaseRepository<Invoice>
     {
-        Task AddAsync(Invoice invoice);
-        Task SaveChangesAsync();
-        Task<Invoice?> GetByIdAsync(int id);
-        Task<Invoice?> GetByIdWithDetailsAsync(int id);
-        Task<IEnumerable<Invoice>> GetAllAsync();
-        void Update(Invoice invoice);
-        void Delete(Invoice invoice);
+        Task<Invoice?> GetByIdWithDetailsAsync(Guid id);
+        Task<IEnumerable<Invoice>> GetAllWithDetailsAsync();
     }
-
 }

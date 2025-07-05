@@ -9,66 +9,39 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MuhasebeAPI.Migrations
+namespace MuhasebeAPI.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250630181800_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250705103516_AddBaseEntityFields")]
+    partial class AddBaseEntityFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Log", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Account", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ActionDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Entity")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("EntityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Logs");
-                });
-
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Account", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -78,6 +51,9 @@ namespace MuhasebeAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -85,28 +61,32 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.CashTransaction", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.CashTransaction", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("LinkedInvoiceId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("LinkedInvoiceId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("timestamp with time zone");
@@ -114,6 +94,9 @@ namespace MuhasebeAPI.Migrations
                     b.Property<string>("TransactionType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -124,26 +107,33 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("CashTransactions");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Company", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("TaxNumber")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -152,21 +142,22 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Invoice", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Invoice", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("AccountId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("InvoiceDate")
@@ -176,8 +167,14 @@ namespace MuhasebeAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -188,28 +185,35 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.InvoiceItem", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.InvoiceItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("InvoiceId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("StockId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("StockId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -220,22 +224,67 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("InvoiceItems");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Stock", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Log", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ActionDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Entity")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("EntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Logs");
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Stock", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -247,6 +296,9 @@ namespace MuhasebeAPI.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -254,20 +306,24 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("Stocks");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.User", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -277,18 +333,36 @@ namespace MuhasebeAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.UserCompany", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.UserCompany", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "CompanyId");
 
@@ -297,20 +371,9 @@ namespace MuhasebeAPI.Migrations
                     b.ToTable("UserCompanies");
                 });
 
-            modelBuilder.Entity("Log", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Account", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.User", "User")
-                        .WithMany("Logs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Account", b =>
-                {
-                    b.HasOne("MuhasebeApp.Domain.Entities.Company", "Company")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Company", "Company")
                         .WithMany("Accounts")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -319,15 +382,15 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.CashTransaction", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.CashTransaction", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.Company", "Company")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Company", "Company")
                         .WithMany("CashTransactions")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MuhasebeApp.Domain.Entities.Invoice", "LinkedInvoice")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Invoice", "LinkedInvoice")
                         .WithMany("CashTransactions")
                         .HasForeignKey("LinkedInvoiceId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -337,9 +400,9 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("LinkedInvoice");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Company", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Company", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.User", "Owner")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -348,15 +411,15 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Invoice", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Invoice", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.Account", "Account")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Account", "Account")
                         .WithMany("Invoices")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MuhasebeApp.Domain.Entities.Company", "Company")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Company", "Company")
                         .WithMany("Invoices")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -367,15 +430,15 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.InvoiceItem", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.InvoiceItem", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.Invoice", "Invoice")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Invoice", "Invoice")
                         .WithMany("InvoiceItems")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MuhasebeApp.Domain.Entities.Stock", "Stock")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Stock", "Stock")
                         .WithMany("InvoiceItems")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,9 +449,20 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("Stock");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Stock", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Log", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.Company", "Company")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.User", "User")
+                        .WithMany("Logs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Stock", b =>
+                {
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Company", "Company")
                         .WithMany("Stocks")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -397,15 +471,15 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.UserCompany", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.UserCompany", b =>
                 {
-                    b.HasOne("MuhasebeApp.Domain.Entities.Company", "Company")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Company", "Company")
                         .WithMany("UserCompanies")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MuhasebeApp.Domain.Entities.User", "User")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.User", "User")
                         .WithMany("UserCompanies")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -416,12 +490,12 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Account", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Account", b =>
                 {
                     b.Navigation("Invoices");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Company", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Company", b =>
                 {
                     b.Navigation("Accounts");
 
@@ -434,19 +508,19 @@ namespace MuhasebeAPI.Migrations
                     b.Navigation("UserCompanies");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Invoice", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Invoice", b =>
                 {
                     b.Navigation("CashTransactions");
 
                     b.Navigation("InvoiceItems");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.Stock", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Stock", b =>
                 {
                     b.Navigation("InvoiceItems");
                 });
 
-            modelBuilder.Entity("MuhasebeApp.Domain.Entities.User", b =>
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.User", b =>
                 {
                     b.Navigation("Logs");
 

@@ -2,14 +2,8 @@
 
 namespace MuhasebeAPI.Domain.Interfaces
 {
-    public interface ICompanyRepository
+    public interface ICompanyRepository : IBaseRepository<Company>
     {
-        Task AddAsync(Company company);
-        Task<Company?> GetByIdAsync(int id);
-        Task<IEnumerable<Company>> GetAllAsync();
-        Task<IEnumerable<Company>> GetCompaniesByOwnerIdAsync(int ownerId);
-        void Update(Company company);
-        void Delete(Company company);
-        Task SaveChangesAsync();
+        Task<IEnumerable<Company>> GetCompaniesByOwnerIdAsync(Guid ownerId);
     }
 }

@@ -10,6 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using MediatR;
+using MuhasebeAPI.Application.Commands.InvoiceCommands;
+using MuhasebeAPI.Application.Queries.InvoiceQueries;
+using MuhasebeAPI.Extensions;
+
 namespace MuhasebeAPI.API.Controllers
 {
     [ApiController]
@@ -17,9 +22,10 @@ namespace MuhasebeAPI.API.Controllers
     [Authorize]
     public class InvoiceController : ControllerBase
     {
-        private readonly IInvoiceService _invoiceService;
+        private readonly IMediator _mediator;
         private readonly ICompanyRepository _companyRepository;
         private readonly AppDbContext _context;
+
         private InvoiceDto MapToDto(Invoice invoice)
         {
             return new InvoiceDto
@@ -36,31 +42,28 @@ namespace MuhasebeAPI.API.Controllers
                 }).ToList()
             };
         }
-        public InvoiceController(IInvoiceService invoiceService, ICompanyRepository companyRepository, AppDbContext context)
+
+        public InvoiceController(IMediator mediator, ICompanyRepository companyRepository, AppDbContext context)
         {
-            _invoiceService = invoiceService;
+            _mediator = mediator;
             _companyRepository = companyRepository;
             _context = context;
         }
 
         // Fatura oluşturma
         [HttpPost("create")]
-        public async Task<IActionResult> CreateInvoice([FromForm] InvoiceDto dto)
+        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceCommand command)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated.");
-
-            int userId = int.Parse(userIdClaim.Value);
-
             try
             {
-                var createdInvoice = await _invoiceService.CreateInvoiceAsync(dto, userId);
+                command.UserId = User.GetUserId();
+
+                var createdInvoice = await _mediator.Send(command);
                 return Ok(createdInvoice);
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Forbid(ex.Message);
+                return Unauthorized(ex.Message);
             }
             catch (System.Exception ex)
             {
@@ -69,75 +72,83 @@ namespace MuhasebeAPI.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<InvoiceDto>> GetById(int id)
+        public async Task<ActionResult<InvoiceDto>> GetById(Guid id)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated.");
+            try
+            {
+                Guid userId = User.GetUserId();
 
-            int userId = int.Parse(userIdClaim.Value);
+                var query = new GetInvoiceByIdQuery { Id = id };
+                var invoice = await _mediator.Send(query);
+                if (invoice == null)
+                    return NotFound();
 
-            var invoice = await _invoiceService.GetByIdWithDetailsAsync(id);
-            if (invoice == null)
-                return NotFound();
+                if (invoice.Company.OwnerId != userId)
+                    return Forbid("You are not authorized to view this invoice.");
 
-            if (invoice.Company.OwnerId != userId)
-                return Forbid("You are not authorized to view this invoice.");
-
-            var dto = MapToDto(invoice);
-            return Ok(dto);
+                var dto = MapToDto(invoice);
+                return Ok(dto);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
-
 
         // Fatura silme
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User not authenticated.");
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            var invoice = await _invoiceService.GetByIdWithDetailsAsync(id);
-            if (invoice == null)
-                return NotFound();
-
-            if (invoice.Company.OwnerId != userId)
-                return Forbid("You are not authorized to delete this invoice.");
-
             try
             {
-                await _invoiceService.DeleteInvoiceAsync(id);
+                Guid userId = User.GetUserId();
+
+                var getInvoiceQuery = new GetInvoiceByIdQuery { Id = id };
+                var invoice = await _mediator.Send(getInvoiceQuery);
+                if (invoice == null)
+                    return NotFound();
+
+                if (invoice.Company.OwnerId != userId)
+                    return Forbid("You are not authorized to delete this invoice.");
+
+                var command = new DeleteInvoiceCommand { Id = id, UserId = userId };
+                var result = await _mediator.Send(command);
+                
+                if (!result)
+                    return BadRequest("Failed to delete invoice.");
+
                 return NoContent();
             }
-            catch (System.Exception ex)
+            catch (UnauthorizedAccessException ex)
             {
-                return BadRequest(ex.Message);
+                return Unauthorized(ex.Message);
             }
         }
+
         [Authorize]
         [HttpGet("my-invoices")]
         public async Task<ActionResult<IEnumerable<InvoiceDto>>> GetMyInvoices()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("UserId claim not found.");
+            try
+            {
+                Guid userId = User.GetUserId();
 
-            int userId = int.Parse(userIdClaim.Value);
+                var userCompanies = await _companyRepository.GetCompaniesByOwnerIdAsync(userId);
+                var companyIds = userCompanies.Select(c => c.Id).ToList();
 
-            var userCompanies = await _companyRepository.GetCompaniesByOwnerIdAsync(userId);
-            var companyIds = userCompanies.Select(c => c.Id).ToList();
+                var invoices = await _context.Invoices
+                    .Where(i => companyIds.Contains(i.CompanyId))
+                    .Include(i => i.InvoiceItems)
+                    .ToListAsync();
 
-            var invoices = await _context.Invoices
-                .Where(i => companyIds.Contains(i.CompanyId))
-                .Include(i => i.InvoiceItems)
-                .ToListAsync();
+                var invoiceDtos = invoices.Select(i => MapToDto(i)).ToList();
 
-            var invoiceDtos = invoices.Select(i => MapToDto(i)).ToList();
-
-            return Ok(invoiceDtos);
+                return Ok(invoiceDtos);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
-
     }
 }

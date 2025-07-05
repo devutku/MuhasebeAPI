@@ -2,13 +2,9 @@
 
 namespace MuhasebeAPI.Domain.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository : IBaseRepository<User>
     {
-        Task<User?> GetByIdAsync(Guid id);                 // Id ile kullanıcı getir
         Task<User?> GetByEmailAsync(string email);        // Email ile kullanıcı getir
-        Task AddAsync(User user);                          // Yeni kullanıcı ekle
-        Task UpdateAsync(User user);                       // Kullanıcı güncelle
-        Task DeleteAsync(int id);                          // Kullanıcı sil
-        Task<IEnumerable<User>> GetAllAsync();             // Tüm kullanıcıları getir
+        Task DeleteAsync(Guid id);                        // Kullanıcı sil
     }
 }

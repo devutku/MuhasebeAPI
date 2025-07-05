@@ -5,11 +5,11 @@ namespace MuhasebeAPI.Application.Interfaces
 {
     public interface ICompanyService
     {
-        Task<Company> CreateCompanyAsync(CompanyRegisterDto dto,int ownerId);
-        Task<Company?> GetCompanyByIdAsync(int id);
-        Task<List<Company>> GetCompaniesByOwnerIdAsync(int ownerId);
+        Task<Company> CreateCompanyAsync(CompanyRegisterDto dto,Guid ownerId);
+        Task<Company?> GetCompanyByIdAsync(Guid id);
+        Task<List<Company>> GetCompaniesByOwnerIdAsync(Guid ownerId);
         Task<List<Company>> GetAllCompaniesAsync();
-        Task<bool> DeleteCompanyAsync(int id);
-        Task<Company> UpdateCompanyAsync(int id, CompanyRegisterDto dto);
+        Task<bool> DeleteCompanyAsync(Guid id);
+        Task<Company> UpdateCompanyAsync(Guid id, CompanyRegisterDto dto);
     }
 }

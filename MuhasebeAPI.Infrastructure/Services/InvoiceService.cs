@@ -16,7 +16,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             _companyRepository = companyRepository;
         }
 
-        public async Task<Invoice> CreateInvoiceAsync(InvoiceDto dto, int userId)
+        public async Task<Invoice> CreateInvoiceAsync(InvoiceDto dto, Guid userId)
         {
             var company = await _companyRepository.GetByIdAsync(dto.CompanyId);
             if (company == null)
@@ -81,7 +81,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             return invoice;
         }
 
-        public async Task<Invoice?> GetByIdWithDetailsAsync(int id)
+        public async Task<Invoice?> GetByIdWithDetailsAsync(Guid id)
         {
             return await _invoiceRepository.GetByIdWithDetailsAsync(id);
         }
@@ -91,7 +91,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             return await _invoiceRepository.GetAllAsync();
         }
 
-        /*public async Task UpdateInvoiceAsync(int id, InvoiceUpdateDto dto)
+        /*public async Task UpdateInvoiceAsync(Guid id, InvoiceUpdateDto dto)
         {
             var invoice = await _invoiceRepository.GetByIdWithDetailsAsync(id);
             if (invoice == null)
@@ -109,7 +109,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             await _invoiceRepository.SaveChangesAsync();
         }*/
 
-        public async Task DeleteInvoiceAsync(int id)
+        public async Task DeleteInvoiceAsync(Guid id)
         {
             var invoice = await _invoiceRepository.GetByIdWithDetailsAsync(id);
             if (invoice == null)

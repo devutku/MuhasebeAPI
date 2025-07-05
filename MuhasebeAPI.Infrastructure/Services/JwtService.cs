@@ -43,11 +43,14 @@ namespace MuhasebeAPI.Infrastructure.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var expireMinutes = int.Parse(_configuration["Jwt:ExpireMinutes"] ?? "60");
+            var expires = DateTime.Now.AddMinutes(expireMinutes);
+
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: expires,
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

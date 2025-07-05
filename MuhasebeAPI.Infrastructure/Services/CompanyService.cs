@@ -16,7 +16,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             _accountRepository = accountRepository;
         }
 
-        public async Task<Company> CreateCompanyAsync(CompanyRegisterDto dto, int ownerId)
+        public async Task<Company> CreateCompanyAsync(CompanyRegisterDto dto, Guid ownerId)
         {
             var company = new Company
             {
@@ -51,12 +51,12 @@ namespace MuhasebeAPI.Infrastructure.Services
 
 
 
-        public async Task<Company?> GetCompanyByIdAsync(int id)
+        public async Task<Company?> GetCompanyByIdAsync(Guid id)
         {
             return await _companyRepository.GetByIdAsync(id);
         }
 
-        public async Task<List<Company>> GetCompaniesByOwnerIdAsync(int ownerId)
+        public async Task<List<Company>> GetCompaniesByOwnerIdAsync(Guid ownerId)
         {
             var companies = await _companyRepository.GetCompaniesByOwnerIdAsync(ownerId);
             return companies.ToList();
@@ -68,7 +68,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             return companies.ToList();
         }
 
-        public async Task<bool> DeleteCompanyAsync(int id)
+        public async Task<bool> DeleteCompanyAsync(Guid id)
         {
             var company = await _companyRepository.GetByIdAsync(id);
             if (company == null) return false;
@@ -78,7 +78,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             return true;
         }
 
-        public async Task<Company> UpdateCompanyAsync(int id, CompanyRegisterDto dto)
+        public async Task<Company> UpdateCompanyAsync(Guid id, CompanyRegisterDto dto)
         {
             var company = await _companyRepository.GetByIdAsync(id);
             if (company == null)

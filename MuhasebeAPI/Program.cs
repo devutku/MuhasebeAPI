@@ -8,19 +8,22 @@ using MuhasebeAPI.Infrastructure.Persistence;
 using MuhasebeAPI.Infrastructure.Repositories;
 using MuhasebeAPI.Infrastructure.Services;
 using System.Text;
-
+using MediatR;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.  
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
+
+// Add MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MuhasebeAPI.Application.Commands.UserCommands.CreateUserCommand).Assembly));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MuhasebeApp API", Version = "v1" });
-
-    // JWT Authentication için Swagger’a Security Definition ekliyoruz
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
