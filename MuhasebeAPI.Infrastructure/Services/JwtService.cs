@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using MuhasebeAPI.Application.Interfaces;
 using MuhasebeAPI.Domain.Entities;
 using MuhasebeAPI.Domain.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 namespace MuhasebeAPI.Infrastructure.Services
 {
     public class JwtService : IJwtService
@@ -37,20 +37,17 @@ namespace MuhasebeAPI.Infrastructure.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            Console.WriteLine($"Using JWT key: {_configuration["Jwt:Key"]}");
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var expireMinutes = int.Parse(_configuration["Jwt:ExpireMinutes"] ?? "60");
-            var expires = DateTime.UtcNow.AddMinutes(expireMinutes);
-
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: expires,
                 signingCredentials: creds);
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);

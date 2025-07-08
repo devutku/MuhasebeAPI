@@ -9,11 +9,13 @@ namespace MuhasebeAPI.Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserService(IUserRepository userRepository, IJwtService jwtService)
+        public UserService(IUserRepository userRepository, IJwtService jwtService, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
             _jwtService = jwtService;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<string?> RegisterAsync(UserRegisterDto dto)
@@ -51,10 +53,25 @@ namespace MuhasebeAPI.Infrastructure.Services
         public async Task<string?> LoginAsync(LoginRequest dto)
         {
             var user = await _userRepository.GetByEmailAsync(dto.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            if (user == null)
+            {
+                Console.WriteLine("User not found.");
                 return null;
-            Console.WriteLine("User authenticated successfully");
-            return _jwtService.GenerateToken(user);
+            }
+
+            if (!_passwordHasher.VerifyPassword(dto.Password, user.PasswordHash))
+            {
+                Console.WriteLine("Invalid password.");
+                return null;
+            }
+
+            var token = _jwtService.GenerateToken(user);
+            if (token == null)
+            {
+                Console.WriteLine("Token generation failed.");
+            }
+
+            return token;
         }
     }
 

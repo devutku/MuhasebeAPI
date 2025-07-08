@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MuhasebeAPI.Application.DTOs;
-using MuhasebeAPI.Application.Interfaces;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using MuhasebeAPI.Application.Commands.UserCommands;
 
 [Route("api/[controller]")]

@@ -1,6 +1,7 @@
 using MediatR;
 using MuhasebeAPI.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MuhasebeAPI.Application.Commands.CompanyCommands
 {
@@ -13,8 +14,8 @@ namespace MuhasebeAPI.Application.Commands.CompanyCommands
         [Required]
         [StringLength(50)]
         public string TaxNumber { get; set; } = null!;
-        
-        // This will be set by the controller, not by the client
+
+        [JsonIgnore]
         public Guid OwnerId { get; set; }
     }
 } 

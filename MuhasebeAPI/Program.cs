@@ -8,8 +8,7 @@ using MuhasebeAPI.Infrastructure.Persistence;
 using MuhasebeAPI.Infrastructure.Repositories;
 using MuhasebeAPI.Infrastructure.Services;
 using System.Text;
-using MediatR;
-using System.Reflection;
+Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.  
@@ -18,7 +17,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MuhasebeAPI.Application.Commands.UserCommands.CreateUserCommand).Assembly));
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -59,16 +57,17 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     var config = builder.Configuration;
+    options.IncludeErrorDetails = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
+
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,
+        ValidateLifetime = false,
         ValidateIssuerSigningKey = true,
         ValidIssuer = config["Jwt:Issuer"],
         ValidAudience = config["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"])),
-        ClockSkew = TimeSpan.Zero
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
     };
     
     options.Events = new JwtBearerEvents
