@@ -1,0 +1,52 @@
+### Debug Authentication Flow
+
+### Step 1: Test if the API is running
+GET {{baseUrl}}/api/company
+
+### Step 2: Register a user (should return "User registered successfully")
+POST {{baseUrl}}/api/user/register
+Content-Type: application/json
+
+{
+  "name": "Debug User",
+  "email": "debug@example.com",
+  "password": "password123"
+}
+
+### Step 3: Login to get token (should return {"Token": "eyJ..."})
+POST {{baseUrl}}/api/user/login
+Content-Type: application/json
+
+{
+  "email": "debug@example.com",
+  "password": "password123"
+}
+
+### Step 4: Test company creation with token (copy the token from step 3)
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+{
+  "name": "Debug Company",
+  "taxNumber": "1234567890"
+}
+
+### Step 5: Test with empty token
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+  "name": "Debug Company",
+  "taxNumber": "1234567890"
+}
+
+### Step 6: Test without Authorization header
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+
+{
+  "name": "Debug Company",
+  "taxNumber": "1234567890"
+} 

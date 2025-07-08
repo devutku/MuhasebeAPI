@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MuhasebeAPI.Application.DTOs;
-using MuhasebeAPI.Application.Interfaces;
-using System.Security.Claims;
-using MediatR;
 using MuhasebeAPI.Application.Commands.CompanyCommands;
 using MuhasebeAPI.Application.Queries.CompanyQueries;
 using MuhasebeAPI.Extensions;
@@ -62,6 +59,7 @@ namespace MuhasebeAPI.API.Controllers
                     company.Id,
                     company.Name,
                     company.TaxNumber,
+                    company.OwnerId,
                     Accounts = company.Accounts.Select(a => new
                     {
                         a.Id,

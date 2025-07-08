@@ -24,7 +24,7 @@ namespace MuhasebeAPI.Application.Handlers.UserHandlers
             };
 
             var result = await _userService.RegisterAsync(dto);
-            return result ?? "Registration failed";
+            return result ?? "Email already registered";
         }
     }
 } 

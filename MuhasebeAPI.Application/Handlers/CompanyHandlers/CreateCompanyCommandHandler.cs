@@ -16,13 +16,25 @@ namespace MuhasebeAPI.Application.Handlers.CompanyHandlers
 
         public async Task<Domain.Entities.Company> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
         {
+            Console.WriteLine($"Creating company '{request.Name}' for user {request.OwnerId}");
+            
             var dto = new CompanyRegisterDto
             {
                 Name = request.Name,
                 taxNumber = request.TaxNumber
             };
 
-            return await _companyService.CreateCompanyAsync(dto, request.OwnerId);
+            try
+            {
+                var company = await _companyService.CreateCompanyAsync(dto, request.OwnerId);
+                Console.WriteLine($"Company '{company.Name}' created successfully with ID {company.Id}");
+                return company;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating company: {ex.Message}");
+                throw;
+            }
         }
     }
 } 

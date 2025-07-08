@@ -1,0 +1,56 @@
+### Complete Test Flow for Company Creation
+
+### 1. Register a new user
+POST {{baseUrl}}/api/user/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 2. Login to get JWT token
+POST {{baseUrl}}/api/user/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 3. Create company with the JWT token (replace {{authToken}} with the token from step 2)
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Test Company Ltd.",
+  "taxNumber": "1234567890"
+}
+
+### 4. Get all companies (public endpoint)
+GET {{baseUrl}}/api/company
+
+### 5. Get companies by owner (requires authentication)
+GET {{baseUrl}}/api/company/owner/{{userId}}
+Authorization: Bearer {{authToken}}
+
+### 6. Test invalid token
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+Authorization: Bearer invalid_token_here
+
+{
+  "name": "Test Company",
+  "taxNumber": "1234567890"
+}
+
+### 7. Test without token
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+
+{
+  "name": "Test Company",
+  "taxNumber": "1234567890"
+} 

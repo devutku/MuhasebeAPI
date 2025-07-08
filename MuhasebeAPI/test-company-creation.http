@@ -1,0 +1,26 @@
+### Test Company Creation (requires authentication)
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Test Company Ltd.",
+  "taxNumber": "1234567890"
+}
+
+### Test Company Creation with Invalid Data
+POST {{baseUrl}}/api/company/create
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "",
+  "taxNumber": ""
+}
+
+### Get All Companies
+GET {{baseUrl}}/api/company
+
+### Get Companies by Owner (requires authentication)
+GET {{baseUrl}}/api/company/owner/{{userId}}
+Authorization: Bearer {{authToken}} 

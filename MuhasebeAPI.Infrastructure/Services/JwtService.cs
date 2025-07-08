@@ -36,15 +36,15 @@ namespace MuhasebeAPI.Infrastructure.Services
         {
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var expireMinutes = int.Parse(_configuration["Jwt:ExpireMinutes"] ?? "60");
-            var expires = DateTime.Now.AddMinutes(expireMinutes);
+            var expires = DateTime.UtcNow.AddMinutes(expireMinutes);
 
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
@@ -53,7 +53,9 @@ namespace MuhasebeAPI.Infrastructure.Services
                 expires: expires,
                 signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            Console.WriteLine($"Generated JWT token for user {user.Email}: {tokenString}");
+            return tokenString;
         }
     }
 }
