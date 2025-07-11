@@ -16,6 +16,6 @@ namespace MuhasebeAPI.Application.Commands.CompanyCommands
         public string TaxNumber { get; set; } = null!;
 
         [JsonIgnore]
-        public Guid OwnerId { get; set; }
+        public Guid UserId { get; set; }
     }
 } 

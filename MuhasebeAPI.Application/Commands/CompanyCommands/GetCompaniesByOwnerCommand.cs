@@ -5,6 +5,6 @@ namespace MuhasebeAPI.Application.Commands.CompanyCommands
 {
     public class GetCompaniesByOwnerCommand : IRequest<List<Company>>
     {
-        public Guid OwnerId { get; set; }
+        public Guid UserId { get; set; }
     }
 } 

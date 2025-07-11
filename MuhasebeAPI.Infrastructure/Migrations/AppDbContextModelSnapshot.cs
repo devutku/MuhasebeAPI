@@ -28,7 +28,56 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AccountCategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("BankAccountId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountCategoryId");
+
+                    b.HasIndex("BankAccountId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Account", (string)null);
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.AccountCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -44,18 +93,92 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Type")
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccountCategory", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2025, 7, 11, 10, 44, 22, 686, DateTimeKind.Utc).AddTicks(9553),
+                            IsDeleted = false,
+                            Name = "Satıcılar"
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTime(2025, 7, 11, 10, 44, 22, 686, DateTimeKind.Utc).AddTicks(9567),
+                            IsDeleted = false,
+                            Name = "Alıcılar"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedAt = new DateTime(2025, 7, 11, 10, 44, 22, 686, DateTimeKind.Utc).AddTicks(9569),
+                            IsDeleted = false,
+                            Name = "Banka Hesapları"
+                        },
+                        new
+                        {
+                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                            CreatedAt = new DateTime(2025, 7, 11, 10, 44, 22, 686, DateTimeKind.Utc).AddTicks(9570),
+                            IsDeleted = false,
+                            Name = "Ödenecek Vergiler"
+                        },
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
+                            CreatedAt = new DateTime(2025, 7, 11, 10, 44, 22, 686, DateTimeKind.Utc).AddTicks(9571),
+                            IsDeleted = false,
+                            Name = "Peşin Ödemeler"
+                        },
+                        new
+                        {
+                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
+                            CreatedAt = new DateTime(2025, 7, 11, 10, 44, 22, 686, DateTimeKind.Utc).AddTicks(9572),
+                            IsDeleted = false,
+                            Name = "Nakit (Kasa)"
+                        });
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.BankAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BankName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Branch")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IBAN")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Accounts");
+                    b.ToTable("BankAccount", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.CashTransaction", b =>
@@ -101,7 +224,7 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasIndex("LinkedInvoiceId");
 
-                    b.ToTable("CashTransactions");
+                    b.ToTable("CashTransaction", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Company", b =>
@@ -123,8 +246,46 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("OwnerId")
+                    b.Property<string>("TaxNumber")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Company", (string)null);
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
 
                     b.Property<string>("TaxNumber")
                         .HasColumnType("text");
@@ -134,9 +295,7 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("Companies");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Invoice", b =>
@@ -179,7 +338,7 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoice", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.InvoiceItem", b =>
@@ -218,7 +377,7 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("InvoiceItems");
+                    b.ToTable("InvoiceItem", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Log", b =>
@@ -259,7 +418,7 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Log", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Stock", b =>
@@ -300,7 +459,43 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stock", (string)null);
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Supplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaxNumber")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Supplier", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.User", b =>
@@ -342,7 +537,7 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.UserCompany", b =>
@@ -372,18 +567,47 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("UserCompanies");
+                    b.ToTable("UserCompany", (string)null);
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Account", b =>
                 {
+                    b.HasOne("MuhasebeAPI.Domain.Entities.AccountCategory", "AccountCategory")
+                        .WithMany("Accounts")
+                        .HasForeignKey("AccountCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MuhasebeAPI.Domain.Entities.BankAccount", "BankAccount")
+                        .WithMany("Accounts")
+                        .HasForeignKey("BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("MuhasebeAPI.Domain.Entities.Company", "Company")
                         .WithMany("Accounts")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Customer", "Customer")
+                        .WithMany("Accounts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MuhasebeAPI.Domain.Entities.Supplier", "Supplier")
+                        .WithMany("Accounts")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AccountCategory");
+
+                    b.Navigation("BankAccount");
+
                     b.Navigation("Company");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.CashTransaction", b =>
@@ -406,13 +630,13 @@ namespace MuhasebeAPI.Infrastructure.Migrations
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Company", b =>
                 {
-                    b.HasOne("MuhasebeAPI.Domain.Entities.User", "Owner")
+                    b.HasOne("MuhasebeAPI.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Invoice", b =>
@@ -499,6 +723,16 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                     b.Navigation("Invoices");
                 });
 
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.AccountCategory", b =>
+                {
+                    b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.BankAccount", b =>
+                {
+                    b.Navigation("Accounts");
+                });
+
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Company", b =>
                 {
                     b.Navigation("Accounts");
@@ -512,6 +746,11 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                     b.Navigation("UserCompanies");
                 });
 
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Customer", b =>
+                {
+                    b.Navigation("Accounts");
+                });
+
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Invoice", b =>
                 {
                     b.Navigation("CashTransactions");
@@ -522,6 +761,11 @@ namespace MuhasebeAPI.Infrastructure.Migrations
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Stock", b =>
                 {
                     b.Navigation("InvoiceItems");
+                });
+
+            modelBuilder.Entity("MuhasebeAPI.Domain.Entities.Supplier", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("MuhasebeAPI.Domain.Entities.User", b =>

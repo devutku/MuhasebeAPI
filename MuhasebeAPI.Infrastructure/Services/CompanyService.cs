@@ -16,29 +16,37 @@ namespace MuhasebeAPI.Infrastructure.Services
             _accountRepository = accountRepository;
         }
 
-        public async Task<Company> CreateCompanyAsync(CompanyRegisterDto dto, Guid ownerId)
+        public async Task<Company> CreateCompanyAsync(CompanyRegisterDto dto, Guid userId)
         {
             var company = new Company
             {
                 Name = dto.Name,
                 TaxNumber = dto.taxNumber,
-                OwnerId = ownerId,
+                UserId = userId,
                 CreatedAt = DateTime.UtcNow
             };
 
             await _companyRepository.AddAsync(company);
             await _companyRepository.SaveChangesAsync(); 
 
+            // Fetch AccountCategory IDs from the database after seeding, then use them here.
+            // Example:
+            // var nakitCategory = await _context.AccountCategories.FirstAsync(x => x.Name == "Nakit (Kasa)");
+            // var defaultAccounts = new List<Account>
+            // {
+            //     new() { Name = "Nakit (Kasa)", AccountCategoryId = nakitCategory.Id, CompanyId = company.Id },
+            //     ...
+            // };
             var defaultAccounts = new List<Account>
     {
-        new() { Name = "Nakit (Kasa)", Type = "Asset", CompanyId = company.Id },
-        new() { Name = "Banka Hesapları", Type = "Asset", CompanyId = company.Id },
-        new() { Name = "Alıcılar (Müşteriler)", Type = "Asset", CompanyId = company.Id },
-        new() { Name = "Satıcılar (Tedarikçiler)", Type = "Liability", CompanyId = company.Id },
-        new() { Name = "Kredi Kartı Borçları", Type = "Liability", CompanyId = company.Id },
-        new() { Name = "Ödenecek Vergiler", Type = "Liability", CompanyId = company.Id },
-        new() { Name = "Alacak Senetleri", Type = "Asset", CompanyId = company.Id },
-        new() { Name = "Peşin Ödemeler", Type = "Asset", CompanyId = company.Id },
+        new() { Name = "Nakit (Kasa)", CompanyId = company.Id },
+        new() { Name = "Banka Hesapları", CompanyId = company.Id },
+        new() { Name = "Alıcılar (Müşteriler)", CompanyId = company.Id },
+        new() { Name = "Satıcılar (Tedarikçiler)", CompanyId = company.Id },
+        new() { Name = "Kredi Kartı Borçları", CompanyId = company.Id },
+        new() { Name = "Ödenecek Vergiler", CompanyId = company.Id },
+        new() { Name = "Alacak Senetleri", CompanyId = company.Id },
+        new() { Name = "Peşin Ödemeler", CompanyId = company.Id },
     };
 
             await _accountRepository.AddRangeAsync(defaultAccounts);
@@ -56,9 +64,9 @@ namespace MuhasebeAPI.Infrastructure.Services
             return await _companyRepository.GetByIdAsync(id);
         }
 
-        public async Task<List<Company>> GetCompaniesByOwnerIdAsync(Guid ownerId)
+        public async Task<List<Company>> GetCompaniesByUserIdAsync(Guid userId)
         {
-            var companies = await _companyRepository.GetCompaniesByOwnerIdAsync(ownerId);
+            var companies = await _companyRepository.GetCompaniesByUserIdAsync(userId);
             return companies.ToList();
         }
 

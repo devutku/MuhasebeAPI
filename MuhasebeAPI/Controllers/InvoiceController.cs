@@ -83,7 +83,7 @@ namespace MuhasebeAPI.API.Controllers
                 if (invoice == null)
                     return NotFound();
 
-                if (invoice.Company.OwnerId != userId)
+                if (invoice.Company.UserId != userId)
                     return Forbid("You are not authorized to view this invoice.");
 
                 var dto = MapToDto(invoice);
@@ -108,7 +108,7 @@ namespace MuhasebeAPI.API.Controllers
                 if (invoice == null)
                     return NotFound();
 
-                if (invoice.Company.OwnerId != userId)
+                if (invoice.Company.UserId != userId)
                     return Forbid("You are not authorized to delete this invoice.");
 
                 var command = new DeleteInvoiceCommand { Id = id, UserId = userId };
@@ -133,7 +133,7 @@ namespace MuhasebeAPI.API.Controllers
             {
                 Guid userId = User.GetUserId();
 
-                var userCompanies = await _companyRepository.GetCompaniesByOwnerIdAsync(userId);
+                var userCompanies = await _companyRepository.GetCompaniesByUserIdAsync(userId);
                 var companyIds = userCompanies.Select(c => c.Id).ToList();
 
                 var invoices = await _context.Invoices

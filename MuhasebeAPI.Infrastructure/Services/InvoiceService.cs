@@ -22,7 +22,7 @@ namespace MuhasebeAPI.Infrastructure.Services
             if (company == null)
                 throw new Exception("Company not found.");
 
-            if (company.OwnerId != userId)
+            if (company.UserId != userId)
                 throw new UnauthorizedAccessException("You are not authorized to create invoices for this company.");
 
             var invoice = new Invoice

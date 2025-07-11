@@ -16,7 +16,7 @@ namespace MuhasebeAPI.Application.Handlers.CompanyHandlers
 
         public async Task<Domain.Entities.Company> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
         {
-            Console.WriteLine($"Creating company '{request.Name}' for user {request.OwnerId}");
+            Console.WriteLine($"Creating company '{request.Name}' for user {request.UserId}");
             
             var dto = new CompanyRegisterDto
             {
@@ -26,7 +26,7 @@ namespace MuhasebeAPI.Application.Handlers.CompanyHandlers
 
             try
             {
-                var company = await _companyService.CreateCompanyAsync(dto, request.OwnerId);
+                var company = await _companyService.CreateCompanyAsync(dto, request.UserId);
                 Console.WriteLine($"Company '{company.Name}' created successfully with ID {company.Id}");
                 return company;
             }

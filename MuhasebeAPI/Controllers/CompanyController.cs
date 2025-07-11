@@ -37,10 +37,10 @@ namespace MuhasebeAPI.API.Controllers
             return Ok(company);
         }
 
-        [HttpGet("owner/{ownerId}")]
-        public async Task<IActionResult> GetByOwnerId(Guid ownerId)
+        [HttpGet("owner/{userId}")]
+        public async Task<IActionResult> GetByUserId(Guid userId)
         {
-            var command = new GetCompaniesByOwnerCommand { OwnerId = ownerId };
+            var command = new GetCompaniesByOwnerCommand { UserId = userId };
             var companies = await _mediator.Send(command);
             return Ok(companies);
         }
@@ -51,7 +51,7 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
-                command.OwnerId = User.GetUserId();
+                command.UserId = User.GetUserId();
                 var company = await _mediator.Send(command);
 
                 return Ok(new
@@ -59,12 +59,13 @@ namespace MuhasebeAPI.API.Controllers
                     company.Id,
                     company.Name,
                     company.TaxNumber,
-                    company.OwnerId,
+                    company.UserId,
                     Accounts = company.Accounts.Select(a => new
                     {
                         a.Id,
                         a.Name,
-                        a.Type,
+                        a.AccountCategoryId,
+                        AccountCategoryName = a.AccountCategory.Name,
                         a.CompanyId
                     })
                 });
@@ -87,7 +88,7 @@ namespace MuhasebeAPI.API.Controllers
                 if (company == null)
                     return NotFound();
 
-                if (company.OwnerId != userId)
+                if (company.UserId != userId)
                     return Forbid("You are not authorized to update this company.");
 
                 command.Id = id;

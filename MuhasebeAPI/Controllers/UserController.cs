@@ -13,7 +13,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] CreateUserCommand command)
+    public async Task<IActionResult> Register([FromForm] CreateUserCommand command)
     {
         try
         {
@@ -35,7 +35,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
+    public async Task<IActionResult> Login([FromForm] LoginUserCommand command)
     {
         try
         {

@@ -11,10 +11,10 @@ namespace MuhasebeAPI.Infrastructure.Repositories
         {
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesByOwnerIdAsync(Guid ownerId)
+        public async Task<IEnumerable<Company>> GetCompaniesByUserIdAsync(Guid userId)
         {
             return await _dbSet
-                .Where(c => c.OwnerId == ownerId && !c.IsDeleted)
+                .Where(c => c.UserId == userId && !c.IsDeleted)
                 .ToListAsync();
         }
     }

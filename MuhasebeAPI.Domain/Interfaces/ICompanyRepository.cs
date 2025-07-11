@@ -4,6 +4,6 @@ namespace MuhasebeAPI.Domain.Interfaces
 {
     public interface ICompanyRepository : IBaseRepository<Company>
     {
-        Task<IEnumerable<Company>> GetCompaniesByOwnerIdAsync(Guid ownerId);
+        Task<IEnumerable<Company>> GetCompaniesByUserIdAsync(Guid userId);
     }
 }
