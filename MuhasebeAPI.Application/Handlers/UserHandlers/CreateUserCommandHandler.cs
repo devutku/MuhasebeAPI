@@ -19,8 +19,10 @@ namespace MuhasebeAPI.Application.Handlers.UserHandlers
             var dto = new UserRegisterDto
             {
                 Name = request.Name,
-                Email = request.Email,
-                Password = request.Password
+                AreaCode = request.AreaCode,
+                PhoneNumber = request.PhoneNumber,
+                Password = request.Password,
+                Email = request.Email
             };
 
             var result = await _userService.RegisterAsync(dto);

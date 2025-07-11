@@ -16,6 +16,11 @@ namespace MuhasebeAPI.Infrastructure.Repositories
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
         }
 
+        public async Task<User?> GetByPhoneAsync(string areaCode, string phoneNumber)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.AreaCode == areaCode && u.PhoneNumber == phoneNumber && !u.IsDeleted);
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var user = await GetByIdAsync(id);

@@ -23,7 +23,7 @@ namespace MuhasebeAPI.Infrastructure.Services
 
         public async Task<User?> Authenticate(string email, string password)
         {
-            var user = await _userRepository.GetByEmailAsync(email); // await ile bekle
+            var user = await _userRepository.GetByEmailAsync(email); 
             if (user == null) return null;
 
             bool isValid = _passwordHasher.VerifyPassword(password, user.PasswordHash);
@@ -42,7 +42,6 @@ namespace MuhasebeAPI.Infrastructure.Services
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            Console.WriteLine($"Using JWT key: {_configuration["Jwt:Key"]}");
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
@@ -51,7 +50,6 @@ namespace MuhasebeAPI.Infrastructure.Services
                 signingCredentials: creds);
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            Console.WriteLine($"Generated JWT token for user {user.Email}: {tokenString}");
             return tokenString;
         }
     }

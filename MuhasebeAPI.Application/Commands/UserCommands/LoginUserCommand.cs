@@ -6,8 +6,12 @@ namespace MuhasebeAPI.Application.Commands.UserCommands
     public class LoginUserCommand : IRequest<string?>
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
+        [StringLength(10)]
+        public string AreaCode { get; set; } = null!;
+
+        [Required]
+        [StringLength(20)]
+        public string PhoneNumber { get; set; } = null!;
         
         [Required]
         public string Password { get; set; } = null!;

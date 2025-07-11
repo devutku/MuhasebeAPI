@@ -8,7 +8,8 @@ using System.Threading.Tasks;
     {
         public class LoginRequest
         {
-            public string Email { get; set; } = null!;
+            public string AreaCode { get; set; } = null!;
+            public string PhoneNumber { get; set; } = null!;
             public string Password { get; set; } = null!;
         }
     }

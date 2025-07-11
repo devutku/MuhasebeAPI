@@ -18,7 +18,8 @@ namespace MuhasebeAPI.Application.Handlers.UserHandlers
         {
             var dto = new LoginRequest
             {
-                Email = request.Email,
+                AreaCode = request.AreaCode,
+                PhoneNumber = request.PhoneNumber,
                 Password = request.Password
             };
 

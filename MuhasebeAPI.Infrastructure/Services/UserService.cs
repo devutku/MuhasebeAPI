@@ -20,10 +20,10 @@ namespace MuhasebeAPI.Infrastructure.Services
 
         public async Task<string?> RegisterAsync(UserRegisterDto dto)
         {
-            var existingUser = await _userRepository.GetByEmailAsync(dto.Email);
+            var existingUser = await _userRepository.GetByPhoneAsync(dto.AreaCode, dto.PhoneNumber);
             if (existingUser != null)
             {
-                Console.WriteLine($"User registration failed: Email {dto.Email} already exists");
+                Console.WriteLine($"User registration failed: Phone {dto.AreaCode}-{dto.PhoneNumber} already exists");
                 return null;
             }
 
@@ -32,6 +32,8 @@ namespace MuhasebeAPI.Infrastructure.Services
                 Id = Guid.NewGuid(),
                 Name = dto.Name,
                 Email = dto.Email,
+                AreaCode = dto.AreaCode,
+                PhoneNumber = dto.PhoneNumber,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 CreatedAt = DateTime.UtcNow
             };
@@ -52,7 +54,7 @@ namespace MuhasebeAPI.Infrastructure.Services
 
         public async Task<string?> LoginAsync(LoginRequest dto)
         {
-            var user = await _userRepository.GetByEmailAsync(dto.Email);
+            var user = await _userRepository.GetByPhoneAsync(dto.AreaCode, dto.PhoneNumber);
             if (user == null)
             {
                 Console.WriteLine("User not found.");
