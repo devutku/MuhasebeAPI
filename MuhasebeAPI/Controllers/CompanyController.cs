@@ -47,7 +47,7 @@ namespace MuhasebeAPI.API.Controllers
 
         [Authorize]
         [HttpPost("create")]
-        public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyCommand command)
+        public async Task<IActionResult> CreateCompany([FromForm] CreateCompanyCommand command)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace MuhasebeAPI.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] UpdateCompanyCommand command)
+        public async Task<IActionResult> UpdateCompany(Guid id, [FromForm] UpdateCompanyCommand command)
         {
             try
             {

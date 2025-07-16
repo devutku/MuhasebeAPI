@@ -18,7 +18,7 @@ namespace MuhasebeAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateSupplierCommand command)
+        public async Task<IActionResult> Create([FromForm] CreateSupplierCommand command)
         {
             var id = await _mediator.Send(command);
             return Ok(id);

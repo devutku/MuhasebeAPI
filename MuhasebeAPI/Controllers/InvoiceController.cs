@@ -52,7 +52,7 @@ namespace MuhasebeAPI.API.Controllers
 
         // Fatura oluşturma
         [HttpPost("create")]
-        public async Task<IActionResult> CreateInvoice([FromBody] CreateInvoiceCommand command)
+        public async Task<IActionResult> CreateInvoice([FromForm] CreateInvoiceCommand command)
         {
             try
             {
