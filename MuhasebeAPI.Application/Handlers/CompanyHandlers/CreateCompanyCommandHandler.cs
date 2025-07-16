@@ -21,7 +21,7 @@ namespace MuhasebeAPI.Application.Handlers.CompanyHandlers
             var dto = new CompanyRegisterDto
             {
                 Name = request.Name,
-                taxNumber = request.TaxNumber
+                TaxNumber = request.TaxNumber
             };
 
             try

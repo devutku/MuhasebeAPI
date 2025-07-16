@@ -10,6 +10,8 @@ namespace MuhasebeAPI.Application.DTOs
         
         [Required]
         [StringLength(50)]
-        public string taxNumber { get; set; } = null!;
+        public string? TaxNumber { get; set; }
+        public string? TaxOffice { get; set; }
+        public string? Address { get; set; }
     }
 }

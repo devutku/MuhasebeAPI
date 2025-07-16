@@ -21,7 +21,9 @@ namespace MuhasebeAPI.Infrastructure.Services
             var company = new Company
             {
                 Name = dto.Name,
-                TaxNumber = dto.taxNumber,
+                TaxNumber = dto.TaxNumber,
+                TaxOffice = dto.TaxOffice,
+                Address = dto.Address,
                 UserId = userId,
                 CreatedAt = DateTime.UtcNow
             };
@@ -89,7 +91,9 @@ namespace MuhasebeAPI.Infrastructure.Services
                 throw new Exception("Company not found");
 
             company.Name = dto.Name;
-            company.TaxNumber = dto.taxNumber;
+            company.TaxNumber = dto.TaxNumber;
+            company.TaxOffice = dto.TaxOffice;
+            company.Address = dto.Address;
 
             await _companyRepository.SaveChangesAsync();
             return company;

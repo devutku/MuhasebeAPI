@@ -3,7 +3,9 @@
     public class Company : BaseEntity
     {
         public string Name { get; set; } = null!;
-        public string? TaxNumber { get; set; }
+        public string? TaxNumber { get; set; } // Vergi Numarası
+        public string? TaxOffice { get; set; } // Vergi Dairesi
+        public string? Address { get; set; }   // Adres
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
         public ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();
