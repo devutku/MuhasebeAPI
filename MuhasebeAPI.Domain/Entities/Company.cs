@@ -5,7 +5,6 @@
         public string Name { get; set; } = null!;
         public string? TaxNumber { get; set; }
         public Guid UserId { get; set; }
-
         public User User { get; set; } = null!;
         public ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();
         public ICollection<Stock> Stocks { get; set; } = new List<Stock>();

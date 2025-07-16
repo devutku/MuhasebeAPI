@@ -65,7 +65,6 @@ namespace MuhasebeAPI.API.Controllers
                         a.Id,
                         a.Name,
                         a.AccountCategoryId,
-                        AccountCategoryName = a.AccountCategory.Name,
                         a.CompanyId
                     })
                 });

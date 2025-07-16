@@ -38,17 +38,13 @@ namespace MuhasebeAPI.Infrastructure.Services
             //     ...
             // };
             var defaultAccounts = new List<Account>
-    {
-        new() { Name = "Nakit (Kasa)", CompanyId = company.Id },
-        new() { Name = "Banka Hesapları", CompanyId = company.Id },
-        new() { Name = "Alıcılar (Müşteriler)", CompanyId = company.Id },
-        new() { Name = "Satıcılar (Tedarikçiler)", CompanyId = company.Id },
-        new() { Name = "Kredi Kartı Borçları", CompanyId = company.Id },
-        new() { Name = "Ödenecek Vergiler", CompanyId = company.Id },
-        new() { Name = "Alacak Senetleri", CompanyId = company.Id },
-        new() { Name = "Peşin Ödemeler", CompanyId = company.Id },
-    };
-
+            {
+                new() {
+                    Name = "Alıcılar",
+                    CompanyId = company.Id,
+                    AccountCategoryId = Guid.Parse("22222222-2222-2222-2222-222222222222") // Alıcılar kategorisi
+                }
+            };
             await _accountRepository.AddRangeAsync(defaultAccounts);
             await _accountRepository.SaveChangesAsync();
             var companyWithAccounts = await _companyRepository.GetByIdAsync(company.Id);
