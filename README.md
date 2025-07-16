@@ -1,106 +1,95 @@
-# MuhasebeApp API
+# MuhasebeApp
 
-**Under active development**
-> **Note:** This project is currently under active development and may undergo significant changes.
-
-MuhasebeApp is an accounting application API developed with .NET 8, featuring JWT-based user authentication and PostgreSQL integration.
+MuhasebeApp is a modern accounting API built with .NET 8, Entity Framework Core, and PostgreSQL. It features a scalable, enterprise-grade architecture inspired by leading SaaS accounting solutions (like Paraşüt), and supports CQRS, MediatR, and robust user management.
 
 ---
 
 ## Features
 
-- User registration and login (secure sessions with JWT)
-- Password hashing and verification with BCrypt
-- PostgreSQL database integration (Entity Framework Core)
-- Layered architecture: Controller, Service, Repository
-- Invoice and stock management modules
-- API documentation with Swagger
+- **User Management:**  
+  - Phone number-based login (with area code separation)
+  - Optional email and address fields
+  - Secure password hashing (BCrypt)
+- **Company Management:**  
+  - Singular table naming convention
+  - Tax office and tax number fields
+- **Accounting Core:**  
+  - Modern chart of accounts structure
+  - Separate tables for Customers, Suppliers, and Bank Accounts
+  - Flexible Account entity referencing Customer, Supplier, or BankAccount
+  - Account categories seeded by default
+- **CQRS Architecture:**  
+  - Command/Query separation with MediatR
+  - Service and repository layers for all master data
+- **Database Management:**  
+  - Automated migrations and seed data
+  - PostgreSQL support
 
 ---
 
 ## Getting Started
 
-### Requirements
+### Prerequisites
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - PostgreSQL database
-- Visual Studio / VS Code or another IDE
 
 ### Installation
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/muhasebeapp.git
-    cd muhasebeapp/API
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/muhasebeapp.git
+   cd muhasebeapp
+   ```
 
-2. Restore dependencies:
-    ```bash
-    dotnet restore
-    ```
+2. **Configure the database:**
+   - Update your `appsettings.json` with your PostgreSQL connection string.
 
-3. Update the database connection string in `appsettings.json`:
-    ```json
-    "ConnectionStrings": {
-        "WebApiDatabase": "Host=localhost;Database=muhasebe;Username=postgres;Password=yourpassword"
-    }
-    ```
+3. **Apply migrations and seed data:**
+   ```bash
+   dotnet ef database update --project MuhasebeAPI.Infrastructure/MuhasebeAPI.Infrastructure.csproj --startup-project MuhasebeAPI/MuhasebeAPI.API.csproj
+   ```
 
-4. Configure JWT settings in `appsettings.json`:
-    ```json
-    "JwtSettings": {
-        "Key": "this-is-a-very-secret-key-123456",
-        "Issuer": "muhasebeapp",
-        "Audience": "muhasebeappusers",
-        "ExpireMinutes": 60
-    }
-    ```
+4. **Run the application:**
+   ```bash
+   dotnet run --project MuhasebeAPI/MuhasebeAPI.API.csproj
+   ```
 
-5. Apply database migrations:
-    ```bash
-    dotnet ef database update
-    ```
-
-6. Run the application:
-    ```bash
-    dotnet run
-    ```
+5. **Access the API:**
+   - Swagger UI: `https://localhost:5001/swagger`
 
 ---
 
-## Usage
+## API Overview
 
-- Access API documentation at `https://localhost:5001/swagger`.
-- Register a user via `/api/user/register`.
-- Login and obtain JWT token via `/api/user/login`.
-- Manage invoices and related stock quantities with dedicated endpoints.
-- Only authorized users can create invoices for their own companies.
-
----
-
-## Architecture
-
-- **Controller:** Handles HTTP requests and calls services.
-- **Service:** Contains business logic and uses repositories.
-- **Repository:** Handles data access operations.
-- **Invoice Management:** Create, read, and delete invoices; updates stock quantities accordingly.
-- **Stock Management:** Track product quantities and update inventory based on invoices.
-- **JWT:** Uses JSON Web Token for user authentication.
-- **Password Hashing:** Ensures security with BCrypt hashing.
+- **User Endpoints:**  
+  - Register, login, and manage users via phone number
+- **Company Endpoints:**  
+  - Create and manage companies, including tax office and tax number
+- **Customer, Supplier, BankAccount Endpoints:**  
+  - Full CRUD operations with CQRS
+- **Account Endpoints:**  
+  - Create accounts linked to customers, suppliers, or bank accounts
 
 ---
 
-## Notes
+## Technologies Used
 
-- Passwords are always stored hashed, never in plain text.
-- JWT keys and other secrets should be securely stored in `appsettings.json` or environment variables.
-- Services are registered using dependency injection.
-- Invoice creation is restricted to the company owners only.
-- Stock levels are automatically updated when invoices are created or deleted.
-- Please open issues for bugs or feature requests.
+- .NET 8
+- Entity Framework Core
+- PostgreSQL
+- MediatR (CQRS)
+- BCrypt (Password Hashing)
+- Swagger (API Documentation)
+
+---
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
 ---
 
 ## License
 
-MIT License © 2025 Utku Berki
+[MIT](LICENSE.txt)
