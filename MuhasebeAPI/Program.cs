@@ -74,12 +74,10 @@ builder.Services.AddAuthentication(options =>
     {
         OnAuthenticationFailed = context =>
         {
-            Console.WriteLine($"JWT Authentication failed: {context.Exception.Message}");
             return Task.CompletedTask;
         },
         OnTokenValidated = context =>
         {
-            Console.WriteLine($"JWT Token validated successfully for user: {context.Principal?.Identity?.Name}");
             return Task.CompletedTask;
         }
     };

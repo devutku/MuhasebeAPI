@@ -4,6 +4,7 @@ using MuhasebeAPI.Application.Commands.SupplierCommands;
 using MuhasebeAPI.Domain.Entities;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace MuhasebeAPI.Controllers
 {
@@ -12,16 +13,28 @@ namespace MuhasebeAPI.Controllers
     public class SupplierController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public SupplierController(IMediator mediator)
+        private readonly ILogger<SupplierController> _logger;
+        public SupplierController(IMediator mediator, ILogger<SupplierController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateSupplierCommand command)
         {
-            var id = await _mediator.Send(command);
-            return Ok(id);
+            try
+            {
+                _logger.LogInformation("CreateSupplier request received");
+                var id = await _mediator.Send(command);
+                _logger.LogInformation($"Supplier created with Id: {id}");
+                return Ok(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in CreateSupplier");
+                return StatusCode(500, "Error creating supplier");
+            }
         }
         // Diğer CRUD endpointleri buraya eklenebilir
     }

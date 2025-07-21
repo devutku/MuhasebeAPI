@@ -14,6 +14,7 @@ using MediatR;
 using MuhasebeAPI.Application.Commands.InvoiceCommands;
 using MuhasebeAPI.Application.Queries.InvoiceQueries;
 using MuhasebeAPI.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace MuhasebeAPI.API.Controllers
 {
@@ -25,6 +26,7 @@ namespace MuhasebeAPI.API.Controllers
         private readonly IMediator _mediator;
         private readonly ICompanyRepository _companyRepository;
         private readonly AppDbContext _context;
+        private readonly ILogger<InvoiceController> _logger;
 
         private InvoiceDto MapToDto(Invoice invoice)
         {
@@ -43,11 +45,12 @@ namespace MuhasebeAPI.API.Controllers
             };
         }
 
-        public InvoiceController(IMediator mediator, ICompanyRepository companyRepository, AppDbContext context)
+        public InvoiceController(IMediator mediator, ICompanyRepository companyRepository, AppDbContext context, ILogger<InvoiceController> logger)
         {
             _mediator = mediator;
             _companyRepository = companyRepository;
             _context = context;
+            _logger = logger;
         }
 
         // Fatura oluşturma
@@ -56,18 +59,24 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                _logger.LogInformation("CreateInvoice request received");
                 if (User.GetUserType() != "BackOffice")
+                {
+                    _logger.LogWarning("Forbidden: Only BackOffice users can create invoices.");
                     return StatusCode(403, "Only BackOffice users can create invoices.");
+                }
                 command.UserId = User.GetUserId();
                 var createdInvoice = await _mediator.Send(command);
                 return Ok(createdInvoice);
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex, "Unauthorized access in CreateInvoice");
                 return Unauthorized(ex.Message);
             }
             catch (System.Exception ex)
             {
+                _logger.LogError(ex, "Error in CreateInvoice");
                 return BadRequest(ex.Message);
             }
         }
@@ -77,21 +86,29 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                _logger.LogInformation($"GetById invoice request for Id: {id}");
                 Guid userId = User.GetUserId();
 
                 var query = new GetInvoiceByIdQuery { Id = id };
                 var invoice = await _mediator.Send(query);
                 if (invoice == null)
+                {
+                    _logger.LogWarning($"Invoice not found: {id}");
                     return NotFound();
+                }
 
                 if (invoice.Company.UserId != userId)
+                {
+                    _logger.LogWarning($"Forbidden: User {userId} not authorized to view invoice {id}");
                     return StatusCode(403, "You are not authorized to view this invoice.");
+                }
 
                 var dto = MapToDto(invoice);
                 return Ok(dto);
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex, "Unauthorized access in GetById");
                 return Unauthorized(ex.Message);
             }
         }
@@ -102,23 +119,37 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                _logger.LogInformation($"Delete invoice request for Id: {id}");
                 if (User.GetUserType() != "BackOffice")
+                {
+                    _logger.LogWarning("Forbidden: Only BackOffice users can delete invoices.");
                     return StatusCode(403, "Only BackOffice users can delete invoices.");
+                }
                 Guid userId = User.GetUserId();
                 var getInvoiceQuery = new GetInvoiceByIdQuery { Id = id };
                 var invoice = await _mediator.Send(getInvoiceQuery);
                 if (invoice == null)
+                {
+                    _logger.LogWarning($"Invoice not found for delete: {id}");
                     return NotFound();
+                }
                 if (invoice.Company.UserId != userId)
+                {
+                    _logger.LogWarning($"Forbidden: User {userId} not authorized to delete invoice {id}");
                     return StatusCode(403, "You are not authorized to delete this invoice.");
+                }
                 var command = new DeleteInvoiceCommand { Id = id, UserId = userId };
                 var result = await _mediator.Send(command);
                 if (!result)
+                {
+                    _logger.LogWarning($"Failed to delete invoice: {id}");
                     return BadRequest("Failed to delete invoice.");
+                }
                 return NoContent();
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex, "Unauthorized access in Delete");
                 return Unauthorized(ex.Message);
             }
         }
@@ -129,6 +160,7 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                _logger.LogInformation("GetMyInvoices request received");
                 if (User.GetUserType() == "Customer")
                 {
                     Guid userId = User.GetUserId();
@@ -149,11 +181,13 @@ namespace MuhasebeAPI.API.Controllers
                 }
                 else
                 {
+                    _logger.LogWarning("Unknown user type in GetMyInvoices");
                     return StatusCode(403, "Unknown user type.");
                 }
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex, "Unauthorized access in GetMyInvoices");
                 return Unauthorized(ex.Message);
             }
         }
