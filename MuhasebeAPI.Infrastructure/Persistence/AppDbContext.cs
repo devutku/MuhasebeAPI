@@ -98,9 +98,8 @@ namespace MuhasebeAPI.Infrastructure.Persistence
                 .WithMany(b => b.Accounts)
                 .HasForeignKey(a => a.BankAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<User>()
-                .Property(u => u.Role)
+                .Property(u => u.UserType)
                 .HasConversion<string>();
         }
     }

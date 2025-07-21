@@ -23,6 +23,5 @@ namespace MuhasebeAPI.Controllers
             var id = await _mediator.Send(command);
             return Ok(id);
         }
-        // Diğer CRUD endpointleri buraya eklenebilir
     }
 } 

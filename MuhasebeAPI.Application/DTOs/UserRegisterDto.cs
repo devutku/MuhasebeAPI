@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MuhasebeAPI.Domain.Entities;
 
 namespace MuhasebeAPI.Application.DTOs
 {
@@ -12,8 +13,10 @@ namespace MuhasebeAPI.Application.DTOs
         [StringLength(10)]
         public string AreaCode { get; set; } = null!;
 
+        /// <summary>
+        /// Phone number should start with 'B' or 'C' (e.g., B5xxxxxxxxx or C5xxxxxxxxx)
+        /// </summary>
         [Required]
-        [StringLength(20)]
         public string PhoneNumber { get; set; } = null!;
         
         [Required]
@@ -22,5 +25,7 @@ namespace MuhasebeAPI.Application.DTOs
 
         [EmailAddress]
         public string? Email { get; set; }
+
+        public UserType UserType { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using MediatR;
 using MuhasebeAPI.Application.Commands.UserCommands;
 using MuhasebeAPI.Application.Interfaces;
 using MuhasebeAPI.Application.DTOs;
+using MuhasebeAPI.Domain.Entities;
 
 namespace MuhasebeAPI.Application.Handlers.UserHandlers
 {
@@ -16,11 +17,13 @@ namespace MuhasebeAPI.Application.Handlers.UserHandlers
 
         public async Task<string?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
+            var userType = request.PhoneNumber.StartsWith("B") ? UserType.BackOffice : UserType.Customer;
+            var phoneNumber = request.PhoneNumber.Substring(1);
             var dto = new LoginRequest
             {
-                AreaCode = request.AreaCode,
-                PhoneNumber = request.PhoneNumber,
-                Password = request.Password
+                PhoneNumber = phoneNumber,
+                Password = request.Password,
+                UserType = userType
             };
 
             return await _userService.LoginAsync(dto);

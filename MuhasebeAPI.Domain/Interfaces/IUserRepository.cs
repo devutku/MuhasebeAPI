@@ -7,5 +7,6 @@ namespace MuhasebeAPI.Domain.Interfaces
         Task<User?> GetByEmailAsync(string email);        // Email ile kullanıcı getir
         Task DeleteAsync(Guid id);                        // Kullanıcı sil
         Task<User?> GetByPhoneAsync(string areaCode, string phoneNumber); // Phone ile kullanıcı getir
+        Task<User?> GetByPhoneAndTypeAsync(string phoneNumber, UserType userType); // Phone and type ile kullanıcı getir
     }
 }

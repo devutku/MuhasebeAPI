@@ -56,8 +56,9 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                if (User.GetUserType() != "BackOffice")
+                    return StatusCode(403, "Only BackOffice users can create invoices.");
                 command.UserId = User.GetUserId();
-
                 var createdInvoice = await _mediator.Send(command);
                 return Ok(createdInvoice);
             }
@@ -84,7 +85,7 @@ namespace MuhasebeAPI.API.Controllers
                     return NotFound();
 
                 if (invoice.Company.UserId != userId)
-                    return Forbid("You are not authorized to view this invoice.");
+                    return StatusCode(403, "You are not authorized to view this invoice.");
 
                 var dto = MapToDto(invoice);
                 return Ok(dto);
@@ -101,22 +102,19 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                if (User.GetUserType() != "BackOffice")
+                    return StatusCode(403, "Only BackOffice users can delete invoices.");
                 Guid userId = User.GetUserId();
-
                 var getInvoiceQuery = new GetInvoiceByIdQuery { Id = id };
                 var invoice = await _mediator.Send(getInvoiceQuery);
                 if (invoice == null)
                     return NotFound();
-
                 if (invoice.Company.UserId != userId)
-                    return Forbid("You are not authorized to delete this invoice.");
-
+                    return StatusCode(403, "You are not authorized to delete this invoice.");
                 var command = new DeleteInvoiceCommand { Id = id, UserId = userId };
                 var result = await _mediator.Send(command);
-                
                 if (!result)
                     return BadRequest("Failed to delete invoice.");
-
                 return NoContent();
             }
             catch (UnauthorizedAccessException ex)
@@ -131,19 +129,28 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
-                Guid userId = User.GetUserId();
-
-                var userCompanies = await _companyRepository.GetCompaniesByUserIdAsync(userId);
-                var companyIds = userCompanies.Select(c => c.Id).ToList();
-
-                var invoices = await _context.Invoices
-                    .Where(i => companyIds.Contains(i.CompanyId))
-                    .Include(i => i.InvoiceItems)
-                    .ToListAsync();
-
-                var invoiceDtos = invoices.Select(i => MapToDto(i)).ToList();
-
-                return Ok(invoiceDtos);
+                if (User.GetUserType() == "Customer")
+                {
+                    Guid userId = User.GetUserId();
+                    var userCompanies = await _companyRepository.GetCompaniesByUserIdAsync(userId);
+                    var companyIds = userCompanies.Select(c => c.Id).ToList();
+                    var invoices = await _context.Invoices
+                        .Where(i => companyIds.Contains(i.CompanyId))
+                        .Include(i => i.InvoiceItems)
+                        .ToListAsync();
+                    var invoiceDtos = invoices.Select(i => MapToDto(i)).ToList();
+                    return Ok(invoiceDtos);
+                }
+                else if (User.GetUserType() == "BackOffice")
+                {
+                    var invoices = await _context.Invoices.Include(i => i.InvoiceItems).ToListAsync();
+                    var invoiceDtos = invoices.Select(i => MapToDto(i)).ToList();
+                    return Ok(invoiceDtos);
+                }
+                else
+                {
+                    return StatusCode(403, "Unknown user type.");
+                }
             }
             catch (UnauthorizedAccessException ex)
             {

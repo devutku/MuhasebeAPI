@@ -51,6 +51,8 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                if (User.GetUserType() != "BackOffice")
+                    return StatusCode(403, "Only BackOffice users can create companies.");
                 command.UserId = User.GetUserId();
                 var company = await _mediator.Send(command);
 
@@ -80,6 +82,8 @@ namespace MuhasebeAPI.API.Controllers
         {
             try
             {
+                if (User.GetUserType() != "BackOffice")
+                    return StatusCode(403, "Only BackOffice users can update companies.");
                 Guid userId = User.GetUserId();
 
                 var getCompanyCommand = new GetCompanyByIdCommand { Id = id };
@@ -88,7 +92,7 @@ namespace MuhasebeAPI.API.Controllers
                     return NotFound();
 
                 if (company.UserId != userId)
-                    return Forbid("You are not authorized to update this company.");
+                    return StatusCode(403, "You are not authorized to update this company.");
 
                 command.Id = id;
                 var updatedCompany = await _mediator.Send(command);
@@ -103,6 +107,8 @@ namespace MuhasebeAPI.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            if (User.GetUserType() != "BackOffice")
+                return StatusCode(403, "Only BackOffice users can delete companies.");
             var command = new DeleteCompanyCommand { Id = id };
             bool deleted = await _mediator.Send(command);
             if (!deleted)

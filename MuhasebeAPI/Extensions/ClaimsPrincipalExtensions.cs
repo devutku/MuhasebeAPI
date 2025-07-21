@@ -26,5 +26,13 @@ namespace MuhasebeAPI.Extensions
         {
             return user.Claims.Any(c => c.Type == ClaimTypes.NameIdentifier);
         }
+
+        public static string GetUserType(this ClaimsPrincipal user)
+        {
+            var userTypeClaim = user.Claims.FirstOrDefault(c => c.Type == "UserType");
+            if (userTypeClaim == null)
+                throw new UnauthorizedAccessException("User type not found in token");
+            return userTypeClaim.Value;
+        }
     }
 } 

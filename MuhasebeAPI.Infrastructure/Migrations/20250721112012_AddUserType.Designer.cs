@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MuhasebeAPI.Infrastructure.Persistence;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MuhasebeAPI.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250721112012_AddUserType")]
+    partial class AddUserType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,42 +107,42 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 7, 21, 11, 26, 1, 142, DateTimeKind.Utc).AddTicks(4305),
+                            CreatedAt = new DateTime(2025, 7, 21, 11, 20, 11, 712, DateTimeKind.Utc).AddTicks(2399),
                             IsDeleted = false,
                             Name = "Satıcılar"
                         },
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            CreatedAt = new DateTime(2025, 7, 21, 11, 26, 1, 142, DateTimeKind.Utc).AddTicks(4314),
+                            CreatedAt = new DateTime(2025, 7, 21, 11, 20, 11, 712, DateTimeKind.Utc).AddTicks(2410),
                             IsDeleted = false,
                             Name = "Alıcılar"
                         },
                         new
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2025, 7, 21, 11, 26, 1, 142, DateTimeKind.Utc).AddTicks(4315),
+                            CreatedAt = new DateTime(2025, 7, 21, 11, 20, 11, 712, DateTimeKind.Utc).AddTicks(2412),
                             IsDeleted = false,
                             Name = "Banka Hesapları"
                         },
                         new
                         {
                             Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            CreatedAt = new DateTime(2025, 7, 21, 11, 26, 1, 142, DateTimeKind.Utc).AddTicks(4316),
+                            CreatedAt = new DateTime(2025, 7, 21, 11, 20, 11, 712, DateTimeKind.Utc).AddTicks(2413),
                             IsDeleted = false,
                             Name = "Ödenecek Vergiler"
                         },
                         new
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 7, 21, 11, 26, 1, 142, DateTimeKind.Utc).AddTicks(4317),
+                            CreatedAt = new DateTime(2025, 7, 21, 11, 20, 11, 712, DateTimeKind.Utc).AddTicks(2414),
                             IsDeleted = false,
                             Name = "Peşin Ödemeler"
                         },
                         new
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
-                            CreatedAt = new DateTime(2025, 7, 21, 11, 26, 1, 142, DateTimeKind.Utc).AddTicks(4319),
+                            CreatedAt = new DateTime(2025, 7, 21, 11, 20, 11, 712, DateTimeKind.Utc).AddTicks(2415),
                             IsDeleted = false,
                             Name = "Nakit (Kasa)"
                         });
@@ -535,6 +538,10 @@ namespace MuhasebeAPI.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 

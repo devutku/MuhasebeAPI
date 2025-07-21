@@ -12,10 +12,7 @@ namespace MuhasebeAPI.Domain.Entities
         public string PasswordHash { get; set; } = null!;
         public string AreaCode { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
-        public UserRole Role
-        {
-            get; set;
-        }
+        public UserType UserType { get; set; }
 
         public ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();
         public ICollection<Log> Logs { get; set; } = new List<Log>();

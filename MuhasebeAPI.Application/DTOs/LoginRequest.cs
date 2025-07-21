@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MuhasebeAPI.Domain.Entities;
 
-    namespace MuhasebeAPI.Application.DTOs
+namespace MuhasebeAPI.Application.DTOs
     {
         public class LoginRequest
         {
-            public string AreaCode { get; set; } = null!;
+            /// <summary>
+            /// Phone number should start with 'B' or 'C' (e.g., B5xxxxxxxxx or C5xxxxxxxxx)
+            /// </summary>
             public string PhoneNumber { get; set; } = null!;
             public string Password { get; set; } = null!;
+            public UserType UserType { get; set; }
         }
     }
 

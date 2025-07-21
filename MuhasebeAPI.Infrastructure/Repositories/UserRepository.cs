@@ -21,6 +21,11 @@ namespace MuhasebeAPI.Infrastructure.Repositories
             return await _dbSet.FirstOrDefaultAsync(u => u.AreaCode == areaCode && u.PhoneNumber == phoneNumber && !u.IsDeleted);
         }
 
+        public async Task<User?> GetByPhoneAndTypeAsync(string phoneNumber, UserType userType)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber && u.UserType == userType && !u.IsDeleted);
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var user = await GetByIdAsync(id);
