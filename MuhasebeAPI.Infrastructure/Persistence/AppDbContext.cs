@@ -18,6 +18,7 @@ namespace MuhasebeAPI.Infrastructure.Persistence
         public DbSet<Customer> Customers => Set<Customer>();
         public DbSet<Supplier> Suppliers => Set<Supplier>();
         public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
+        public DbSet<Document> Documents { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
