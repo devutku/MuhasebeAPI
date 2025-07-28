@@ -2,9 +2,6 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using MuhasebeAPI.Application.Interfaces;
-using MuhasebeAPI.Domain.Entities;
-using MuhasebeAPI.Domain.Interfaces;
-using MuhasebeAPI.Infrastructure.Persistence;
 
 namespace MuhasebeAPI.Infrastructure.Services
 {
@@ -14,14 +11,11 @@ namespace MuhasebeAPI.Infrastructure.Services
     public class DocumentService : IDocumentService
     {
         private readonly string _documentRootPath;
-        private readonly IDocumentRepository _documentRepository;
-        private readonly AppDbContext _dbContext;
 
-        public DocumentService(IDocumentRepository documentRepository, AppDbContext dbContext)
+        public DocumentService()
         {
+            // You may want to inject this via configuration in a real app
             _documentRootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "documents");
-            _documentRepository = documentRepository;
-            _dbContext = dbContext;
         }
 
         public async Task UploadDocumentAsync(Guid companyId, DocumentType documentType, string fileName, Stream fileStream)
@@ -47,21 +41,6 @@ namespace MuhasebeAPI.Infrastructure.Services
             {
                 await fileStream.CopyToAsync(output);
             }
-
-            // Save metadata to database
-            var document = new Document
-            {
-                Id = Guid.NewGuid(),
-                CompanyId = companyId,
-                DocumentType = documentType.ToString(),
-                FileName = fileName,
-                FilePath = filePath,
-                UploadedBy = Guid.Empty, // TODO: Inject user service to get real user
-                UploadedAt = DateTime.UtcNow,
-                Status = "Pending"
-            };
-            await _documentRepository.AddAsync(document);
-            await _documentRepository.SaveChangesAsync();
 
             // TODO: Emit DocumentUploaded event via RabbitMQ
         }
