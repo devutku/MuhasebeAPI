@@ -17,7 +17,7 @@ namespace MuhasebeAPI.Application.Handlers.UserHandlers
 
         public async Task<string> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            // Parse user type and phone number
+            
             var userType = request.PhoneNumber.StartsWith("B") ? UserType.BackOffice : UserType.Customer;
             var phoneNumber = request.PhoneNumber.Substring(1);
             var dto = new UserRegisterDto

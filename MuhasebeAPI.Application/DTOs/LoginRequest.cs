@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MuhasebeAPI.Domain.Entities;
+﻿using MuhasebeAPI.Domain.Entities;
 
 namespace MuhasebeAPI.Application.DTOs
     {

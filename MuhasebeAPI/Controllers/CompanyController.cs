@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using MuhasebeAPI.Application.Commands.CompanyCommands;
 using MuhasebeAPI.Application.Queries.CompanyQueries;
 using MuhasebeAPI.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace MuhasebeAPI.API.Controllers
 {

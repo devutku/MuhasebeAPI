@@ -1,10 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MuhasebeAPI.Application.Commands.SupplierCommands;
-using MuhasebeAPI.Domain.Entities;
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace MuhasebeAPI.Controllers
 {
